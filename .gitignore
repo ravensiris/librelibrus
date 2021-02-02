@@ -21,3 +21,8 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+.openapi*
+.npmignore
+git_push.sh
+src/api/.gitignore

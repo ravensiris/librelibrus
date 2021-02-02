@@ -1,0 +1,21 @@
+light-cyan = #73daca
+background-main = #1a1b26
+background-dark = #16161e
+light-blue = #79a1f6
+light-red = #f7768e
+light-purple = #9d7cd8
+light-green = #9ece6a
+
+color-contrast(main-color)
+  background-color main-color
+  color darken(main-color, 75%)
+
+color-contrast-reverse(main-color)
+  color main-color
+  background-color darken(main-color, 75%)
+
+.info
+  color-contrast(light-blue)
+
+.warn
+  color-contrast(light-red)
