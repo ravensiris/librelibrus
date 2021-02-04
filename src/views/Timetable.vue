@@ -26,28 +26,11 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LessonUnitComponent from '@/components/LessonUnitComponent.vue'
-import { DateTime, Duration } from 'luxon'
-import { LessonUnit } from '@/api'
 
 export default defineComponent({
   name: 'Timetable',
   components: {
     LessonUnitComponent
-  },
-  created () {
-    const now = DateTime.local()
-    this.$store.dispatch('setDay', now)
-  },
-  computed: {
-    day () {
-      return this.$store.getters.day
-    }
-  },
-  methods: {
-    updateUnits () {
-      const now = this.$store.getters.currentDay
-      this.$store.dispatch('setDay', now.plus(Duration.fromObject({ days: 1 })))
-    }
   }
 })
 </script>

@@ -16,7 +16,6 @@
 
 <script lang="ts">
 import { LessonUnit } from '@/api'
-import { DateTime, Duration } from 'luxon'
 import { defineComponent, PropType } from 'vue'
 
 interface UnitStatus{
@@ -30,27 +29,6 @@ export default defineComponent({
     unit: {
       type: Object as PropType<LessonUnit>,
       required: true
-    }
-  },
-  data () {
-    const start = DateTime.fromISO(this.unit.start)
-    const duration = Duration.fromMillis(this.unit.duration)
-    const end = start.plus(duration)
-    return {
-      start,
-      end,
-      duration
-    }
-  },
-  computed: {
-    beginTime (): string {
-      return this.start.toLocaleString(DateTime.TIME_24_SIMPLE)
-    },
-    status (): UnitStatus {
-      const now = DateTime.local()
-      const done = this.end < now
-      const running = !done && this.start >= now
-      return { done, running }
     }
   }
 })

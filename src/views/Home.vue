@@ -37,10 +37,12 @@
       Check out project's repo
     </button>
   </a>
+  <button @click="testdt">Test datetime</button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { DateTime } from 'luxon'
 
 export default defineComponent({
   name: 'Home',
@@ -50,6 +52,10 @@ export default defineComponent({
     },
     logout () {
       this.$store.dispatch('clearToken')
+    },
+    testdt () {
+      const now = new DateTime()
+      console.log(now)
     }
   },
   computed: {
