@@ -5,10 +5,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "genapi": "openapi-generator-cli generate -i http://localhost:5000/api/swagger.json -g typescript-axios -o src/api --skip-validate-spec"
   },
   "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.1.21",
+    "@types/luxon": "^1.25.1",
     "axios": "^0.21.1",
+    "luxon": "^1.25.0",
     "register-service-worker": "^1.7.1",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",

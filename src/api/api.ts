@@ -30,7 +30,7 @@ export interface ErrorModel {
      * @type {string}
      * @memberof ErrorModel
      */
-    message?: string;
+    message: string;
 }
 /**
  * 
@@ -43,13 +43,13 @@ export interface LessonUnit {
      * @type {string}
      * @memberof LessonUnit
      */
-    name?: string;
+    name: string;
     /**
      * 
      * @type {string}
      * @memberof LessonUnit
      */
-    teacher?: string;
+    teacher: string;
     /**
      * 
      * @type {string}
@@ -67,13 +67,39 @@ export interface LessonUnit {
      * @type {string}
      * @memberof LessonUnit
      */
-    start?: string;
+    start: string;
     /**
      * Total seconds.
      * @type {number}
      * @memberof LessonUnit
      */
-    duration?: number;
+    duration: number;
+}
+/**
+ * 
+ * @export
+ * @interface LessonUnitFailField
+ */
+export interface LessonUnitFailField {
+    /**
+     * 
+     * @type {string}
+     * @memberof LessonUnitFailField
+     */
+    week?: string;
+}
+/**
+ * 
+ * @export
+ * @interface LessonUnitFailModel 
+ */
+export interface LessonUnitFailModel  {
+    /**
+     * 
+     * @type {LessonUnitFailField}
+     * @memberof LessonUnitFailModel 
+     */
+    data: LessonUnitFailField;
 }
 /**
  * 
@@ -83,10 +109,10 @@ export interface LessonUnit {
 export interface LessonUnitsModel {
     /**
      * 
-     * @type {UnitsField}
+     * @type {UnitsDataField}
      * @memberof LessonUnitsModel
      */
-    data?: UnitsField;
+    data: UnitsDataField;
 }
 /**
  * 
@@ -96,10 +122,10 @@ export interface LessonUnitsModel {
 export interface LessonUnitsModelAllOf {
     /**
      * 
-     * @type {UnitsField}
+     * @type {UnitsDataField}
      * @memberof LessonUnitsModelAllOf
      */
-    data?: UnitsField;
+    data: UnitsDataField;
 }
 /**
  * 
@@ -112,7 +138,7 @@ export interface SuccessModel {
      * @type {object}
      * @memberof SuccessModel
      */
-    data?: object;
+    data: object;
 }
 /**
  * 
@@ -125,7 +151,7 @@ export interface TokenField {
      * @type {string}
      * @memberof TokenField
      */
-    token?: string;
+    token: string;
 }
 /**
  * 
@@ -138,7 +164,7 @@ export interface TokenModel {
      * @type {TokenField}
      * @memberof TokenModel
      */
-    data?: TokenField;
+    data: TokenField;
 }
 /**
  * 
@@ -151,20 +177,26 @@ export interface TokenModelAllOf {
      * @type {TokenField}
      * @memberof TokenModelAllOf
      */
-    data?: TokenField;
+    data: TokenField;
 }
 /**
  * 
  * @export
- * @interface UnitsField
+ * @interface UnitsDataField
  */
-export interface UnitsField {
+export interface UnitsDataField {
     /**
      * 
      * @type {Array<LessonUnit>}
-     * @memberof UnitsField
+     * @memberof UnitsDataField
      */
-    units?: Array<LessonUnit>;
+    units: Array<LessonUnit>;
+    /**
+     * ISO format week date
+     * @type {string}
+     * @memberof UnitsDataField
+     */
+    week: string;
 }
 
 /**
@@ -325,6 +357,56 @@ export const TimetableApiAxiosParamCreator = function (configuration?: Configura
                 options: localVarRequestOptions,
             };
         },
+        /**
+         * 
+         * @param {string} week 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLessonUnits_1: async (week: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'week' is not null or undefined
+            if (week === null || week === undefined) {
+                throw new RequiredError('week','Required parameter week was null or undefined when calling getLessonUnits_1.');
+            }
+            const localVarPath = `/timetable/units/{week}`
+                .replace(`{${"week"}}`, encodeURIComponent(String(week)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication apikey required
+            if (configuration && configuration.apiKey) {
+                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
+                    ? await configuration.apiKey("X-API-KEY")
+                    : await configuration.apiKey;
+                localVarHeaderParameter["X-API-KEY"] = localVarApiKeyValue;
+            }
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
     }
 };
 
@@ -341,6 +423,19 @@ export const TimetableApiFp = function(configuration?: Configuration) {
          */
         async getLessonUnits(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LessonUnitsModel>> {
             const localVarAxiosArgs = await TimetableApiAxiosParamCreator(configuration).getLessonUnits(options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+        /**
+         * 
+         * @param {string} week 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getLessonUnits_1(week: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<LessonUnitsModel>> {
+            const localVarAxiosArgs = await TimetableApiAxiosParamCreator(configuration).getLessonUnits_1(week, options);
             return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
                 const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
                 return axios.request(axiosRequestArgs);
@@ -363,6 +458,15 @@ export const TimetableApiFactory = function (configuration?: Configuration, base
         getLessonUnits(options?: any): AxiosPromise<LessonUnitsModel> {
             return TimetableApiFp(configuration).getLessonUnits(options).then((request) => request(axios, basePath));
         },
+        /**
+         * 
+         * @param {string} week 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getLessonUnits_1(week: string, options?: any): AxiosPromise<LessonUnitsModel> {
+            return TimetableApiFp(configuration).getLessonUnits_1(week, options).then((request) => request(axios, basePath));
+        },
     };
 };
 
@@ -381,6 +485,17 @@ export class TimetableApi extends BaseAPI {
      */
     public getLessonUnits(options?: any) {
         return TimetableApiFp(this.configuration).getLessonUnits(options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @param {string} week 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof TimetableApi
+     */
+    public getLessonUnits_1(week: string, options?: any) {
+        return TimetableApiFp(this.configuration).getLessonUnits_1(week, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

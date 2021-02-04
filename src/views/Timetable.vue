@@ -1,6 +1,6 @@
 <template>
-  <div v-if="!units">Loading...</div>
-  <button class="refresh" v-else @click="$store.dispatch('updateTimetable')">
+  <div v-if="!day">Loading...</div>
+  <button class="refresh" v-else @click="updateUnits">
     <svg
       xmlns="http://www.w3.org/2000/svg"
       fill="currentColor"
@@ -17,21 +17,17 @@
     {{ lastUpdated }}
   </button>
   <div class="lesson-units-wrapper">
-    <div v-for="unit in units" :key="unit.starts">
-      <lesson-unit-component
-        :unit="unit"
-        @lessonEnded="$store.dispatch('updateTimetable')"
-        @breakEnded="$store.dispatch('updateTimetable')"
-      ></lesson-unit-component>
+    <div v-for="unit in day" :key="unit.name">
+      <lesson-unit-component :unit="unit"></lesson-unit-component>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import LessonUnitComponent, {
-  LessonUnitPlus
-} from '@/components/LessonUnitComponent.vue'
+import LessonUnitComponent from '@/components/LessonUnitComponent.vue'
+import { DateTime, Duration } from 'luxon'
+import { LessonUnit } from '@/api'
 
 export default defineComponent({
   name: 'Timetable',
@@ -39,61 +35,18 @@ export default defineComponent({
     LessonUnitComponent
   },
   created () {
-    this.$store.dispatch('getTimetable')
-    this.tick = setInterval(this.onTick, 1000)
+    const now = DateTime.local()
+    this.$store.dispatch('setDay', now)
   },
-  data () {
-    return {
-      lastUpdated: this.getLastUpdated(),
-      tick: null as any,
-      selectedWeekDay: new Date().getDay()
+  computed: {
+    day () {
+      return this.$store.getters.day
     }
   },
   methods: {
-    getLastUpdated (): string {
-      const lastUpdated = this.$store.getters.timetableUpdated
-      if (!lastUpdated) {
-        return 'Updating'
-      }
-      const now = new Date()
-      const delta = (now.valueOf() - lastUpdated.valueOf()) / 1000
-      const mins = Math.floor(delta / 60)
-      const secs = Math.floor(delta % 60).toString()
-      let result
-      if (mins) {
-        result =
-          mins.toString().padStart(2, '0') + ':' + secs.padStart(2, '0') + 'm'
-      } else {
-        result = secs + 's'
-      }
-      return result + ' ago'
-    },
-    onTick () {
-      this.lastUpdated = this.getLastUpdated()
-    }
-  },
-  computed: {
-    units () {
-      let timetable = this.$store.getters.timetable as LessonUnitPlus[]
-      timetable = timetable.filter((unit) => {
-        if (unit.start) {
-          const start = new Date(unit.start)
-          return start.getDay() === this.selectedWeekDay
-        }
-      })
-      let prev: LessonUnitPlus
-      timetable.map((unit) => {
-        if (unit.start && unit.duration) {
-          const start = new Date(unit.start).valueOf()
-          unit.start = start
-          unit.end = start + unit.duration * 1000
-          if (prev) {
-            prev.next = unit
-          }
-          prev = unit
-        }
-      })
-      return timetable
+    updateUnits () {
+      const now = this.$store.getters.currentDay
+      this.$store.dispatch('setDay', now.plus(Duration.fromObject({ days: 1 })))
     }
   }
 })

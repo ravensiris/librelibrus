@@ -1,16 +1,30 @@
 import { createStore } from 'vuex'
 import router from '@/router'
-import { LessonUnit, TimetableApi, Configuration } from '@/api'
-import { exportDefaultSpecifier } from '@babel/types'
+import { LessonUnit, TimetableApi, Configuration, UnitsDataField } from '@/api'
+import { DateTime } from 'luxon'
+
+type ISOWeek = string;
+type ISOWeekWithoutDay = string;
+
+interface Timetable {
+  updated: DateTime;
+  units: Array<LessonUnit>;
+}
+
+function justISOWeek (week: ISOWeek): ISOWeekWithoutDay {
+  return week
+    .split('-')
+    .slice(0, 2)
+    .join('')
+}
 
 export default createStore({
   state: {
     isNavbarVisible: true,
     token: localStorage.getItem('token') || '',
-    timetable: {
-      updated: null as Date | null,
-      units: [] as LessonUnit[]
-    }
+    weeks: new Map<ISOWeekWithoutDay, Timetable>(),
+    currentWeek: undefined as ISOWeekWithoutDay | undefined,
+    currentDay: undefined as DateTime | undefined
   },
   mutations: {
     setNavbarVisible (state, isVisible: boolean) {
@@ -24,13 +38,16 @@ export default createStore({
       state.token = ''
       localStorage.removeItem('token')
     },
-    setTimetable (state, units: LessonUnit[]) {
-      state.timetable.units = units
-      state.timetable.updated = new Date()
+    addWeek (state, week: UnitsDataField) {
+      const units = week.units
+      const updated = DateTime.local()
+      state.weeks.set(week.week, { units, updated })
     },
-    clearTimetable (state) {
-      state.timetable.updated = null
-      state.timetable.units = []
+    setWeek (state, week: ISOWeekWithoutDay) {
+      state.currentWeek = week
+    },
+    setDay (state, day: DateTime) {
+      state.currentDay = day
     }
   },
   actions: {
@@ -47,38 +64,64 @@ export default createStore({
       dispatch('setNavbarVisible', false)
       router.push('/login')
     },
-    getTimetable ({ commit, dispatch, state }) {
-      const now = new Date()
-      const updated = state.timetable.updated
-      if (updated !== null) {
-        const delta = (now.valueOf() - updated.valueOf()) / 1000
-        if (delta < 120) { return }
-      }
-
+    getWeek ({ commit, state }, week: ISOWeek) {
       const conf = new Configuration({ apiKey: state.token })
       const timetableApi = new TimetableApi(conf)
       timetableApi
-        .getLessonUnits()
+        .getLessonUnits_1(week)
         .then(resp => {
-          const data = resp.data.data!
-          commit('setTimetable', data.units)
+          commit('addWeek', resp.data.data)
         })
         .catch(err => {
-          if (err.response) {
-            dispatch('clearToken')
-          }
+          throw err
         })
     },
-    updateTimetable ({ commit, dispatch }) {
-      commit('clearTimetable')
-      dispatch('getTimetable')
+    setWeek ({ commit, dispatch, state }, week: ISOWeek) {
+      const justWeek = justISOWeek(week)
+      if (!state.weeks.has(justWeek)) {
+        dispatch('getWeek', week)
+      }
+      commit('setWeek', justWeek)
+    },
+    updateWeek ({ state, dispatch }) {
+      if (!state.currentWeek) {
+        throw Error('Set the week first!')
+      }
+      dispatch('getWeek', justISOWeek(state.currentWeek))
+    },
+    setDay ({ commit, dispatch }, day: DateTime) {
+      commit('setDay', day)
+      dispatch('setWeek', day.toISOWeekDate())
     }
   },
   getters: {
     isNavbarVisible: state => state.isNavbarVisible,
     isAuthorized: state => !!state.token,
-    timetable: state => state.timetable.units,
-    timetableUpdated: state => state.timetable.updated
+    week: (state, getters): Array<LessonUnit> => {
+      const currentWeek = getters.currentWeek
+      return state.weeks.get(currentWeek)?.units!
+    },
+    currentDay: state => {
+      if (!state.currentDay) {
+        throw Error('Set the day first!')
+      }
+      return state.currentDay
+    },
+    currentWeek: state => {
+      if (!state.currentWeek) {
+        throw Error('Set the week first!')
+      }
+      return state.currentWeek
+    },
+    day: (state, getters): Array<LessonUnit> | undefined => {
+      const currentDay = getters.currentDay
+      const units = getters.week as Array<LessonUnit>
+      if (!units) { return [] }
+      return units.filter(unit => {
+        const day = DateTime.fromISO(unit.start)
+        return day.day === currentDay.day
+      })
+    }
   },
   modules: {}
 })
