@@ -2,12 +2,13 @@
   <main>
     <router-view />
   </main>
-  <bottom-navbar :items="navbarItems" v-if="isNavbarVisible"></bottom-navbar>
+  <bottom-navbar :items="navbarItems" v-if="authorized"></bottom-navbar>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 import BottomNavbar from '@/components/BottomNavbar.vue'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'App',
@@ -25,11 +26,7 @@ export default defineComponent({
     }
   },
   computed: {
-    isNavbarVisible () {
-      return (
-        this.$store.getters.isNavbarVisible && this.$store.getters.isAuthorized
-      )
-    }
+    ...mapGetters(['authorized'])
   }
 })
 </script>

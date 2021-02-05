@@ -2,7 +2,7 @@
   <img src="@/assets/ravensiris-logo.png" alt="Author's avatar" />
   <h1>Welcome to <b>Libre</b>librus</h1>
   <h3>An open source frontend to Librus Synergia</h3>
-  <button @click="jumpRightIn()" v-if="!isAuthorized">🚀 Jump right in</button>
+  <button @click="jumpRightIn()" v-if="!authorized">🚀 Jump right in</button>
   <button class="warn" @click="logout()" v-else>
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -23,7 +23,7 @@
     </svg>
     Log Out
   </button>
-  <a href="https://github.com/ravensiris" target="about:blank">
+  <a href="https://github.com/ravensiris/librelibrus" target="about:blank">
     <button>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -37,12 +37,11 @@
       Check out project's repo
     </button>
   </a>
-  <button @click="testdt">Test datetime</button>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { DateTime } from 'luxon'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Home',
@@ -51,17 +50,11 @@ export default defineComponent({
       this.$router.push('/login')
     },
     logout () {
-      this.$store.dispatch('clearToken')
-    },
-    testdt () {
-      const now = new DateTime()
-      console.log(now)
+      this.$store.dispatch('logout')
     }
   },
   computed: {
-    isAuthorized () {
-      return this.$store.getters.isAuthorized
-    }
+    ...mapGetters(['authorized'])
   }
 })
 </script>

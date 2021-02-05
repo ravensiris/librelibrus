@@ -1,0 +1,41 @@
+* Table of contents                                                     :TOC:
+- [[#librelibrus---an-open-source-librus-synergia-frontend][librelibrus - An open source Librus Synergia frontend]]
+- [[#tech-used][Tech used]]
+- [[#running-the-project][Running the project]]
+- [[#current-caveats][Current caveats]]
+- [[#screenshots][Screenshots]]
+
+* librelibrus - An open source Librus Synergia frontend
+
+[[https://github.com/ravensiris/librusrestapi][Project on Github Pages]]
+
+Goal of this project is to free students from the limitations of Librus Synergia software
+mainly: giving the user *fresh* information unlike their mobile app that can only
+refresh every *3h* or so.
+
+Check out my other projects that were used here: [[https://github.com/ravensiris/librusrestapi][librusrestapi]] & [[https://github.com/ravensiris/librusapi][librusapi]]
+
+* Tech used
+- =Vue.js= with =Typescript=, =Vuex=, =Vue Router=, =Stylus=
+- [[https://github.com/openapitools/openapi-generator-cli][OpenAPI Generator]] for quick API client generation with =typescript= and =Axios=
+- [[https://github.com/ravensiris/librusrestapi][librusrestapi]] & [[https://github.com/ravensiris/librusapi][librusapi]]
+
+* Running the project
+
+  #+begin_src 
+  npm run serve
+  #+end_src
+
+* Current caveats
+Currently Vue router doesn't work on Github Pages.
+Unfortunately [[https://stackoverflow.com/questions/50175802/deploy-vue-to-github-pages-error-with-vue-router][this]] wouldn't work for me.
+Site requires manual navigation from the root page.
+* Screenshots
+
+[[./screenshots/home.png]]
+
+[[./screenshots/login.png]]
+
+[[./screenshots/home-authorized.png]]
+
+[[./screenshots/timetable.png]]

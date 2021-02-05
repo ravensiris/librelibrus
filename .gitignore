@@ -26,3 +26,4 @@ pnpm-debug.log*
 .npmignore
 git_push.sh
 src/api/.gitignore
+*~*

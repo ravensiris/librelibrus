@@ -14,10 +14,10 @@
         d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"
       />
     </svg>
-    {{ lastUpdated }}
+    {{ updated || 'Loading..'}}
   </button>
   <div class="lesson-units-wrapper">
-    <div v-for="unit in day" :key="unit.name">
+    <div v-for="unit in dayUnits" :key="unit.name">
       <lesson-unit-component :unit="unit"></lesson-unit-component>
     </div>
   </div>
@@ -26,11 +26,25 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import LessonUnitComponent from '@/components/LessonUnitComponent.vue'
+import { mapActions, mapGetters } from 'vuex'
+import { DateTime } from 'luxon'
 
 export default defineComponent({
   name: 'Timetable',
   components: {
     LessonUnitComponent
+  },
+  computed: {
+    ...mapGetters('timetable', ['dayUnits', 'day']),
+    updated (): string | undefined {
+      return 'Updated at ' + (this.$store.getters['timetable/updated'] as DateTime | undefined)?.toLocaleString(DateTime.TIME_24_SIMPLE)
+    }
+  },
+  methods: {
+    ...mapActions('timetable', ['loadWeek'])
+  },
+  created () {
+    this.loadWeek()
   }
 })
 </script>

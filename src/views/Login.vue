@@ -5,20 +5,23 @@
     <form @submit.prevent="login">
       <p
         class="message"
-        :class="{ warn: !loading && loginFailMessage }"
-        v-if="loading || loginFailMessage"
-        @click="resetMessage()"
+        :class="{ warn: !loading && message }"
+        v-if="loading || message"
       >
-        <span v-if="loading"> Please wait.. </span>
+        <span v-if="loading"> Please wait..</span>
         <span v-else>
-          {{ loginFailMessage }}
+          {{ message }}
         </span>
       </p>
-      <input placeholder="username" v-model="username" :disabled="loading" />
+      <input
+        placeholder="username"
+        v-model="form.username"
+        :disabled="loading"
+      />
       <input
         placeholder="password"
         type="password"
-        v-model="password"
+        v-model="form.password"
         :disabled="loading"
       />
       <button type="submit" :disabled="loading">
@@ -43,53 +46,36 @@
 </template>
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { AuthenticationApi, Configuration } from '@/api'
+import { mapGetters } from 'vuex'
 
 export default defineComponent({
   name: 'Login',
   data () {
     return {
-      username: '',
-      password: '',
-      loading: false,
-      loginFailMessage: ''
+      form: {
+        username: '',
+        password: ''
+      }
     }
   },
   methods: {
     login () {
       this.loading = true
-      const conf = new Configuration({
-        username: this.username,
-        password: this.password
-      })
-      const authApi = new AuthenticationApi(conf)
-      authApi
-        .getAuthorizeToken()
-        .then((resp) => {
-          const token = resp.data.data?.token!
-          this.$store.dispatch('setToken', token)
-        })
-        .catch((err) => {
-          const data = err.response.data
-          if (data.status === 'error') {
-            this.loginFailMessage = data.message
-          }
-        })
-        .finally(() => {
-          this.loading = false
-        })
-    },
-    resetMessage () {
-      this.loginFailMessage = ''
+      this.$store.dispatch('authorize', this.form)
+    }
+  },
+  computed: {
+    ...mapGetters(['authorized', 'loading', 'message'])
+  },
+  watch: {
+    authorized (v) {
+      if (v) {
+        this.$router.push('/')
+      }
     }
   },
   mounted () {
-    if (this.$store.getters.isAuthorized) {
-      this.$store.dispatch('setNavbarVisible', true)
-      this.$router.push('/')
-    } else {
-      this.$store.dispatch('setNavbarVisible', false)
-    }
+    if (this.authorized) { this.$router.push('/') }
   }
 })
 </script>
@@ -118,6 +104,7 @@ input, button, .message
 
 button
   font-size 2rem
+
   svg
     width 3.2rem
     height 3.2rem
@@ -125,4 +112,7 @@ button
 .center
   display flex
   justify-content center
+
+.warn
+  color-contrast(light-red)
 </style>
