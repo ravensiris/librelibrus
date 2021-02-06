@@ -7,7 +7,7 @@
 
 * librelibrus - An open source Librus Synergia frontend
 
-[[https://github.com/ravensiris/librusrestapi][Project on Github Pages]]
+[[https://ravensiris.github.io/librelibrus/][Project on Github Pages]]
 
 Goal of this project is to free students from the limitations of Librus Synergia software
 mainly: giving the user *fresh* information unlike their mobile app that can only
