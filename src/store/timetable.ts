@@ -43,13 +43,14 @@ const timetableStore = {
     }
   } as MutationTree,
   actions: {
-    loadWeek ({ commit, state, rootState }, day?: DateTime) {
+    loadWeek ({ commit, state, rootState, dispatch }, day?: DateTime) {
       const conf = new Configuration({ apiKey: rootState.token.token })
       const timetableApi = new TimetableApi(conf)
       timetableApi.getLessonUnits_1(toISOWeek(day || state.day)).then(resp => {
         const data = resp.data.data
         commit('week', data)
       }).catch(err => {
+        dispatch('logout', undefined, { root: true })
         throw err
       })
     },

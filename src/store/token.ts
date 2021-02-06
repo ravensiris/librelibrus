@@ -1,5 +1,6 @@
 import { AuthenticationApi, Configuration } from '@/api'
 import { MutationTree as MutationTreeT, ActionTree as ActionTreeT, GetterTree as GetterTreeT } from 'vuex'
+import router from '@/router'
 
 export interface State {
     token: string;
@@ -48,13 +49,14 @@ const tokenStore = {
     logout ({ commit }) {
       commit('setToken', '')
       localStorage.removeItem('token')
+      router.push('/')
     }
   } as ActionTree,
   getters: {
     authorized: state => !!state.token,
     status: state => state.status,
     loading: state => state.status === 'loading',
-    message: state => state.status in ['loading', 'success'] ? state.status : ''
+    message: state => state.status in ['loading', 'success'] ? '' : state.status
   } as GetterTree
 
 }
