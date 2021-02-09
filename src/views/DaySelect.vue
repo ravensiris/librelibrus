@@ -122,7 +122,7 @@ export default defineComponent({
   align-items center
   padding 1rem 0
   width 100%
-  background-color background-dark
+  background-color gray
 
   .wrapper
     display flex

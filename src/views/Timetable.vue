@@ -149,6 +149,6 @@ export default defineComponent({
   top 50%
   width 40%
   max-width 20rem
-  color lighten(background-main, 25%)
+  color lighten(gray, 25%)
   transform translateY(-50%)
 </style>

@@ -87,6 +87,12 @@ export interface LessonUnitFailField {
      * @memberof LessonUnitFailField
      */
     week?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof LessonUnitFailField
+     */
+    token?: string;
 }
 /**
  * 
@@ -126,6 +132,145 @@ export interface LessonUnitsModelAllOf {
      * @memberof LessonUnitsModelAllOf
      */
     data: UnitsDataField;
+}
+/**
+ * 
+ * @export
+ * @interface ListMessagesDataField
+ */
+export interface ListMessagesDataField {
+    /**
+     * 
+     * @type {Array<MessageBrief>}
+     * @memberof ListMessagesDataField
+     */
+    messages: Array<MessageBrief>;
+    /**
+     * 
+     * @type {PageInfo}
+     * @memberof ListMessagesDataField
+     */
+    pageInfo: PageInfo;
+}
+/**
+ * 
+ * @export
+ * @interface ListMessagesFailField
+ */
+export interface ListMessagesFailField {
+    /**
+     * 
+     * @type {string}
+     * @memberof ListMessagesFailField
+     */
+    token: string;
+    /**
+     * 
+     * @type {number}
+     * @memberof ListMessagesFailField
+     */
+    page: number;
+}
+/**
+ * 
+ * @export
+ * @interface ListMessagesFailModel
+ */
+export interface ListMessagesFailModel {
+    /**
+     * 
+     * @type {ListMessagesFailField}
+     * @memberof ListMessagesFailModel
+     */
+    data: ListMessagesFailField;
+}
+/**
+ * 
+ * @export
+ * @interface ListMessagesModel
+ */
+export interface ListMessagesModel {
+    /**
+     * 
+     * @type {ListMessagesDataField}
+     * @memberof ListMessagesModel
+     */
+    data: ListMessagesDataField;
+}
+/**
+ * 
+ * @export
+ * @interface ListMessagesModelAllOf
+ */
+export interface ListMessagesModelAllOf {
+    /**
+     * 
+     * @type {ListMessagesDataField}
+     * @memberof ListMessagesModelAllOf
+     */
+    data: ListMessagesDataField;
+}
+/**
+ * 
+ * @export
+ * @interface MessageBrief
+ */
+export interface MessageBrief {
+    /**
+     * 
+     * @type {string}
+     * @memberof MessageBrief
+     */
+    id: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MessageBrief
+     */
+    title: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MessageBrief
+     */
+    sender: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MessageBrief
+     */
+    sent: string;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof MessageBrief
+     */
+    has_attachment: boolean;
+    /**
+     * 
+     * @type {boolean}
+     * @memberof MessageBrief
+     */
+    is_read: boolean;
+}
+/**
+ * 
+ * @export
+ * @interface PageInfo
+ */
+export interface PageInfo {
+    /**
+     * 
+     * @type {number}
+     * @memberof PageInfo
+     */
+    current: number;
+    /**
+     * 
+     * @type {number}
+     * @memberof PageInfo
+     */
+    max_page: number;
 }
 /**
  * 
@@ -303,6 +448,125 @@ export class AuthenticationApi extends BaseAPI {
      */
     public getAuthorizeToken(options?: any) {
         return AuthenticationApiFp(this.configuration).getAuthorizeToken(options).then((request) => request(this.axios, this.basePath));
+    }
+}
+
+
+/**
+ * MessagesApi - axios parameter creator
+ * @export
+ */
+export const MessagesApiAxiosParamCreator = function (configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {number} page 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getListMessages: async (page: number, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'page' is not null or undefined
+            if (page === null || page === undefined) {
+                throw new RequiredError('page','Required parameter page was null or undefined when calling getListMessages.');
+            }
+            const localVarPath = `/Messages/units/{page}`
+                .replace(`{${"page"}}`, encodeURIComponent(String(page)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, 'https://example.com');
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'GET', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication apikey required
+            if (configuration && configuration.apiKey) {
+                const localVarApiKeyValue = typeof configuration.apiKey === 'function'
+                    ? await configuration.apiKey("X-API-KEY")
+                    : await configuration.apiKey;
+                localVarHeaderParameter["X-API-KEY"] = localVarApiKeyValue;
+            }
+
+
+    
+            const queryParameters = new URLSearchParams(localVarUrlObj.search);
+            for (const key in localVarQueryParameter) {
+                queryParameters.set(key, localVarQueryParameter[key]);
+            }
+            for (const key in options.query) {
+                queryParameters.set(key, options.query[key]);
+            }
+            localVarUrlObj.search = (new URLSearchParams(queryParameters)).toString();
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: localVarUrlObj.pathname + localVarUrlObj.search + localVarUrlObj.hash,
+                options: localVarRequestOptions,
+            };
+        },
+    }
+};
+
+/**
+ * MessagesApi - functional programming interface
+ * @export
+ */
+export const MessagesApiFp = function(configuration?: Configuration) {
+    return {
+        /**
+         * 
+         * @param {number} page 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async getListMessages(page: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ListMessagesModel>> {
+            const localVarAxiosArgs = await MessagesApiAxiosParamCreator(configuration).getListMessages(page, options);
+            return (axios: AxiosInstance = globalAxios, basePath: string = BASE_PATH) => {
+                const axiosRequestArgs = {...localVarAxiosArgs.options, url: (configuration?.basePath || basePath) + localVarAxiosArgs.url};
+                return axios.request(axiosRequestArgs);
+            };
+        },
+    }
+};
+
+/**
+ * MessagesApi - factory interface
+ * @export
+ */
+export const MessagesApiFactory = function (configuration?: Configuration, basePath?: string, axios?: AxiosInstance) {
+    return {
+        /**
+         * 
+         * @param {number} page 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        getListMessages(page: number, options?: any): AxiosPromise<ListMessagesModel> {
+            return MessagesApiFp(configuration).getListMessages(page, options).then((request) => request(axios, basePath));
+        },
+    };
+};
+
+/**
+ * MessagesApi - object-oriented interface
+ * @export
+ * @class MessagesApi
+ * @extends {BaseAPI}
+ */
+export class MessagesApi extends BaseAPI {
+    /**
+     * 
+     * @param {number} page 
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof MessagesApi
+     */
+    public getListMessages(page: number, options?: any) {
+        return MessagesApiFp(this.configuration).getListMessages(page, options).then((request) => request(this.axios, this.basePath));
     }
 }
 

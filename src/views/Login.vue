@@ -96,8 +96,8 @@ input, button, .message
 .message
   padding 2rem 1rem
   border-radius 8px
-  background-color light-blue
-  color darken(light-blue, 75%)
+  background-color blue
+  color darken(blue, 75%)
   text-align center
   font-weight bold
   font-size 1.2rem
@@ -114,5 +114,5 @@ button
   justify-content center
 
 .warn
-  color-contrast(light-red)
+  color-contrast(red)
 </style>

@@ -54,10 +54,10 @@ colorize-unit(main-color, classroom-color, info-color)
     color-contrast-reverse(info-color)
 
 .unit.running
-  colorize-unit(light-cyan, light-cyan, light-purple)
+  colorize-unit(cyan, cyan, purple)
 
 .unit.done
-  colorize-unit(light-purple, light-purple, light-blue)
+  colorize-unit(purple, purple, blue)
 
 .unit
   display flex
@@ -65,7 +65,7 @@ colorize-unit(main-color, classroom-color, info-color)
   margin 0 1rem
   width calc(100% - 2rem)
   border-radius 16px
-  colorize-unit(light-blue, light-blue, light-purple)
+  colorize-unit(blue, blue, purple)
 
   .left
     display flex

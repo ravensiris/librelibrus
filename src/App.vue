@@ -19,7 +19,8 @@ export default defineComponent({
   data () {
     const navbarItems = [
       { title: 'Home', icon: 'house.svg', url: '/' },
-      { title: 'Timetable', icon: 'calendar4-week.svg', url: '/timetable' }
+      { title: 'Timetable', icon: 'calendar4-week.svg', url: '/timetable' },
+      { title: 'Messages', icon: 'mailbox.svg', url: '/messages' }
     ]
     return {
       navbarItems
@@ -56,7 +57,7 @@ navbar-height = 4rem
 
 html, body
   margin 0
-  background-color background-main
+  background-color gray
 
 *
   max-width 100vw
@@ -66,7 +67,7 @@ nav
   bottom 0
   width 100%
   height navbar-height
-  background-color background-dark
+  background-color black
 
 main
   display flex

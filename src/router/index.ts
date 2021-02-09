@@ -21,6 +21,11 @@ const routes: Array<RouteRecordRaw> = [
     path: '/dayselect',
     name: 'Day Select',
     component: () => import('../views/DaySelect.vue')
+  },
+  {
+    path: '/messages',
+    name: 'Messages',
+    component: () => import('../views/Messages.vue')
   }
 ]
 
