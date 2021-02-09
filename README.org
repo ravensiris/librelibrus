@@ -39,3 +39,5 @@ Site requires manual navigation from the root page.
 [[./screenshots/home-authorized.png]]
 
 [[./screenshots/timetable.png]]
+
+[[./screenshots/inbox.png]]
