@@ -8,14 +8,28 @@ const router = createRouter({
       path: "/",
       name: "home",
       component: HomeView,
+      meta: {
+        icon: "home-outline",
+        iconActive: "home",
+      },
     },
     {
-      path: "/about",
-      name: "about",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/AboutView.vue"),
+      path: "/timetable",
+      name: "timetable",
+      component: () => import("../views/TimetableView.vue"),
+      meta: {
+        icon: "calendar-outline",
+        iconActive: "calendar",
+      },
+    },
+    {
+      path: "/messages",
+      name: "messages",
+      component: () => import("../views/MessagesView.vue"),
+      meta: {
+        icon: "inbox-outline",
+        iconActive: "inbox",
+      },
     },
   ],
 })
