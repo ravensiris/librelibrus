@@ -18,6 +18,7 @@ const routes = router.getRoutes()
       :title="route.name"
       :href="route.path"
       :icon="(route.meta?.icon) as IconType"
+      :iconActive="(route.meta?.iconActive) as IconType"
     />
   </BottomNavbar>
 </template>

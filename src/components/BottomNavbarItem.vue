@@ -1,17 +1,21 @@
 <script setup lang="ts">
 import Icon from "./icons/Icon.vue"
 import type { IconType } from "@/assets/icons"
-import type { RouteRecordName } from "vue-router"
+import { useRoute, type RouteRecordName } from "vue-router"
+import { computed } from "vue"
 
 interface Props {
   title?: string | RouteRecordName
   icon: IconType
+  iconActive: IconType
   href: string
   active?: boolean
 }
 
 const props = defineProps<Props>()
-console.log(props.icon)
+
+const route = useRoute()
+const isActive = computed(() => route.path === props.href)
 </script>
 
 <template>
@@ -23,7 +27,8 @@ console.log(props.icon)
       class="active-outline hidden w-14 absolute dark:bg-blue-600 bg-blue-100 h-7 rounded-full top-1"
     />
     <div class="w-6 z-10">
-      <Icon :icon="icon" />
+      <Icon v-if="isActive" :icon="iconActive" />
+      <Icon v-else :icon="icon" />
     </div>
     <span class="text-sm font-bold pt-1 capitalize">{{ title }}</span>
   </RouterLink>
