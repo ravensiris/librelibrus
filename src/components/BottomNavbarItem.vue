@@ -20,17 +20,17 @@ const isActive = computed(() => route.path === props.href)
 
 <template>
   <RouterLink
-    class="flex dark:text-slate-300 text-slate-700 flex-col items-center justify-center w-full pt-1.5"
+    class="flex py-1 dark:text-slate-300 text-slate-700 flex-col items-center justify-center w-full pt-1.5"
     :to="href"
   >
     <div
-      class="active-outline hidden w-14 absolute dark:bg-blue-600 bg-blue-100 h-7 rounded-full top-1"
+      class="absolute hidden bg-blue-100 rounded-full active-outline w-14 dark:bg-blue-600 h-7 top-1"
     />
-    <div class="w-6 z-10">
+    <div class="z-10 w-6">
       <Icon v-if="isActive" :icon="iconActive" />
       <Icon v-else :icon="icon" />
     </div>
-    <span class="text-sm font-bold pt-1 capitalize">{{ title }}</span>
+    <span class="pt-1 text-sm font-bold capitalize">{{ title }}</span>
   </RouterLink>
 </template>
 
