@@ -14,5 +14,6 @@ jobs:
       with:
         username: 'ravensiris'
         reponame: 'librelibrus'
+        branch: 'v2'
         usepnpm: true
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
