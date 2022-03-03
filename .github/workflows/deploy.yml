@@ -5,10 +5,14 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Vue
     steps:
+    - uses: pnpm/action-setup@v2.1.0
+      with:
+        version: 6.0.2
     - uses: actions/checkout@v2
     - id: Build-Vue
-      uses: xRealNeon/VuePagesAction@1.0.1
+      uses: ravensiris/VuePagesAction@main
       with:
         username: 'ravensiris'
         reponame: 'librelibrus'
+        usepnpm: true
         token: ${{ secrets.GITHUB_TOKEN }} # Leave this line unchanged
