@@ -9,7 +9,7 @@ const routes = router.getRoutes()
 </script>
 
 <template>
-  <RouterView />
+  <RouterView class="mb-14" />
 
   <BottomNavbar :routes="routes">
     <BottomNavbarItem
